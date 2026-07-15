@@ -412,9 +412,12 @@ h2.in .w>i{transform:translateY(0)}
 @media(hover:none){
   .card:active{transform:translateY(-6px)}
 }
+/* real flags keep their official proportions — matched by height, not width */
 .card .flag{
-  width:58px;margin:0 auto 1.2rem;border-radius:3px;
-  box-shadow:0 4px 12px -4px rgba(0,0,0,.25);
+  height:40px;width:auto;margin:0 auto 1.3rem;
+  border-radius:2px;
+  box-shadow:0 5px 14px -5px rgba(0,0,0,.4);
+  outline:1px solid rgba(0,0,0,.06);
 }
 .card h3{
   font-family:'Playfair Display',serif;
@@ -529,27 +532,63 @@ h2.in .w>i{transform:translateY(0)}
 /* ============ WHY ============ */
 .why{background:var(--lilac-wash)}
 .why-list{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:clamp(1.2rem,2.4vw,2rem);max-width:940px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:clamp(1rem,2vw,1.6rem);
+  max-width:880px;margin:0 auto;
 }
 .why-item{
-  display:flex;align-items:center;gap:1.1rem;
-  padding:1.4rem 1.5rem;background:#fff;border-radius:3px;
-  border:1px solid rgba(192,160,98,.22);
+  position:relative;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;gap:1rem;
+  padding:clamp(1.8rem,3vw,2.4rem) clamp(1.2rem,2vw,1.6rem);
+  background:#fff;border-radius:3px;
+  border:1px solid rgba(192,160,98,.28);
+  box-shadow:0 14px 34px -28px rgba(62,53,70,.5);
+  overflow:hidden;
+  transition:transform .5s var(--ease),box-shadow .5s var(--ease),border-color .5s var(--ease);
+}
+/* a whisper of the kyrgyz ornament in the corner */
+.why-item::after{
+  content:'';position:absolute;right:-26px;bottom:-24px;
+  width:110px;height:56px;
+  background:url("assets/ornament-band.png") center/contain no-repeat;
+  opacity:.11;transform:rotate(-8deg);
+  transition:opacity .5s var(--ease),transform .5s var(--ease);
+  pointer-events:none;
+}
+.why-item:hover{
+  transform:translateY(-7px);
+  border-color:rgba(192,160,98,.65);
+  box-shadow:0 26px 50px -28px rgba(62,53,70,.55);
+}
+.why-item:hover::after{opacity:.2;transform:rotate(-3deg) scale(1.06)}
+
+/* gold ring around a hand-drawn icon */
+.why-ico{
+  flex:0 0 auto;position:relative;
+  width:clamp(58px,7vw,72px);height:clamp(58px,7vw,72px);
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;
+  background:linear-gradient(160deg,#fff,var(--lilac-wash));
+  border:1px solid rgba(192,160,98,.5);
+  color:var(--lilac);
+  transition:transform .5s var(--ease),color .5s var(--ease);
+}
+.why-ico::before{
+  content:'';position:absolute;inset:4px;
+  border:1px dashed rgba(192,160,98,.4);border-radius:50%;
+  transition:transform 8s linear;
+}
+.why-item:hover .why-ico{transform:translateY(-3px) scale(1.06);color:var(--gold-deep)}
+.why-item:hover .why-ico::before{transform:rotate(180deg)}
+.why-ico svg{width:52%;height:auto}
+.why-item p{
   font-family:'Marck Script',cursive;
-  font-size:clamp(1.2rem,2vw,1.55rem);
+  font-size:clamp(1.2rem,1.9vw,1.5rem);
   color:var(--lilac-deep);line-height:1.35;
-  transition:transform .5s var(--ease),box-shadow .5s var(--ease);
+  max-width:22ch;
 }
-.why-item:hover{transform:translateY(-6px);box-shadow:0 20px 40px -26px rgba(62,53,70,.5)}
-.why-item .emo{
-  flex:0 0 auto;font-size:clamp(1.6rem,3vw,2.2rem);
-  animation:float 4s ease-in-out infinite;
-}
-.why-item:nth-child(2) .emo{animation-delay:.5s}
-.why-item:nth-child(3) .emo{animation-delay:1s}
-.why-item:nth-child(4) .emo{animation-delay:1.5s}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 
 /* ============ VENUE ============ */
 .venue-grid{
@@ -719,6 +758,12 @@ footer .organizer{opacity:1;animation:none}
   .venue-text .eyebrow::before{display:block}
   .venue-text{text-align:center}
 }
+@media(max-width:620px){
+  .why-list{grid-template-columns:1fr}
+  .why-item{flex-direction:row;text-align:left;gap:1.1rem;padding:1.3rem 1.2rem}
+  .why-item p{max-width:none}
+  .why-ico{width:54px;height:54px}
+}
 @media(max-width:520px){
   body{font-size:17px}
   .names{flex-direction:column;gap:.2rem}
@@ -816,7 +861,7 @@ footer .organizer{opacity:1;animation:none}
 
     <div class="cards">
       <article class="card rv">
-        <img class="flag" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'%3E%3Crect width='30' height='20' fill='%2300AFCA'/%3E%3Ccircle cx='15' cy='9' r='4' fill='%23FEC50C'/%3E%3Cg stroke='%23FEC50C' stroke-width='.5'%3E%3Cpath d='M15 2v14M8 9h14M10 4l10 10M20 4L10 14'/%3E%3C/g%3E%3Crect x='1' y='2' width='2' height='16' fill='%23FEC50C' opacity='.85'/%3E%3C/svg%3E" alt="Флаг Казахстана">
+        <img class="flag" src="assets/flag-kz.png" alt="Флаг Казахстана" width="240" height="114" loading="lazy">
         <h3>ҚҰРМЕТТІ ҚОНАҚ!</h3>
         <p>Сізді 2026 жылдың ең ерекше тойына шақырамыз.
           <em>Махаббат · Бақыт</em>
@@ -825,7 +870,7 @@ footer .organizer{opacity:1;animation:none}
       </article>
 
       <article class="card rv">
-        <img class="flag" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'%3E%3Crect width='30' height='20' fill='%23E8112D'/%3E%3Ccircle cx='15' cy='10' r='5' fill='%23FFEF00'/%3E%3Cg stroke='%23FFEF00' stroke-width='1'%3E%3Cpath d='M15 3v14M8 10h14M10.5 5.5l9 9M19.5 5.5l-9 9'/%3E%3C/g%3E%3Ccircle cx='15' cy='10' r='3.4' fill='none' stroke='%23E8112D' stroke-width='.7'/%3E%3C/svg%3E" alt="Флаг Кыргызстана">
+        <img class="flag" src="assets/flag-kg.png" alt="Флаг Кыргызстана" width="240" height="144" loading="lazy">
         <h3>УРМАТТУУ КОНОК!</h3>
         <p>Сизди 2026-жылдын эң өзгөчө тоюна чакырабыз.
           <em>Сүйүү · Бакыт</em>
@@ -834,7 +879,7 @@ footer .organizer{opacity:1;animation:none}
       </article>
 
       <article class="card rv">
-        <img class="flag" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'%3E%3Crect width='30' height='10' fill='%230057B7'/%3E%3Crect y='10' width='30' height='10' fill='%23FFDD00'/%3E%3C/svg%3E" alt="Флаг Украины">
+        <img class="flag" src="assets/flag-ua.png" alt="Флаг Украины" width="240" height="160" loading="lazy">
         <h3>ШАНОВНИЙ ГОСТЮ!</h3>
         <p>Запрошуємо вас на найособливіше свято 2026 року.
           <em>Кохання · Щастя</em>
@@ -928,10 +973,59 @@ footer .organizer{opacity:1;animation:none}
     <p class="eyebrow rv">Что вас ждёт</p>
     <h2 class="rv">Почему этот вечер запомнится?</h2>
     <div class="why-list">
-      <div class="why-item rv"><span class="emo">🥂</span><span>Настоящая атмосфера кыргызского тоя</span></div>
-      <div class="why-item rv"><span class="emo">🎤</span><span>Шоу-программа с харизматичным тамадой</span></div>
-      <div class="why-item rv"><span class="emo">🎶</span><span>Музыка, танцы и праздничное настроение</span></div>
-      <div class="why-item rv"><span class="emo">🤍</span><span>Люди, эмоции и воспоминания, которые останутся с вами надолго</span></div>
+
+      <div class="why-item rv">
+        <span class="why-ico">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M11 5h11l-3 15a3.5 3.5 0 0 1-7 0L11 5z"/>
+            <path d="M26 5h11l-1 15a3.5 3.5 0 0 1-7 0L26 5z"/>
+            <path d="M15.5 23.5V38M32.5 23.5V38"/>
+            <path d="M10 43h11M27 43h11"/>
+            <path d="M15.5 38c-3 0-5.5 2.2-5.5 5M32.5 38c3 0 5.5 2.2 5.5 5"/>
+            <path d="M12 11h9M27.5 11h9" opacity=".45"/>
+          </svg>
+        </span>
+        <p>Настоящая атмосфера кыргызского тоя</p>
+      </div>
+
+      <div class="why-item rv">
+        <span class="why-ico">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="18" y="4" width="12" height="22" rx="6"/>
+            <path d="M21 10h6M21 15h6M21 20h6" opacity=".45"/>
+            <path d="M12 22a12 12 0 0 0 24 0"/>
+            <path d="M24 34v9M18 43h12"/>
+          </svg>
+        </span>
+        <p>Шоу-программа с харизматичным тамадой</p>
+      </div>
+
+      <div class="why-item rv">
+        <span class="why-ico">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 34V9l20-4v25"/>
+            <path d="M19 16l20-4" opacity=".5"/>
+            <ellipse cx="13" cy="35" rx="6" ry="4.6"/>
+            <ellipse cx="33" cy="30" rx="6" ry="4.6"/>
+          </svg>
+        </span>
+        <p>Музыка, танцы и праздничное настроение</p>
+      </div>
+
+      <div class="why-item rv">
+        <span class="why-ico">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M24 41c-9.5-6.6-16-12-16-19.5A9.5 9.5 0 0 1 24 15a9.5 9.5 0 0 1 16 6.5C40 29 33.5 34.4 24 41z"/>
+            <path d="M16 21.5a8 8 0 0 1 5-5" opacity=".5"/>
+          </svg>
+        </span>
+        <p>Люди, эмоции и воспоминания, которые останутся с вами надолго</p>
+      </div>
+
     </div>
   </div>
 </section>
