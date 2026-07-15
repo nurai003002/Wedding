@@ -51,29 +51,135 @@ img{max-width:100%;display:block}
 }
 .band.flip{transform:scaleY(-1)}
 
-/* ============ PRELOADER ============ */
+/* ============ ENVELOPE INTRO ============ */
 #loader{
   position:fixed;inset:0;z-index:999;
   background:var(--ivory);
-  display:flex;align-items:center;justify-content:center;
-  transition:opacity .8s var(--ease),visibility .8s;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2rem;
+  cursor:pointer;
+  transition:opacity .9s var(--ease),visibility .9s;
+}
+#loader::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(60% 50% at 50% 50%,var(--lilac-wash),transparent 70%);
 }
 #loader.done{opacity:0;visibility:hidden}
-.loader-ring{
-  width:clamp(140px,32vw,190px);height:clamp(140px,32vw,190px);
-  border:1px solid rgba(192,160,98,.3);
-  border-top-color:var(--gold);
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  animation:spin 1.6s linear infinite;
+
+.envelope{
+  position:relative;
+  width:clamp(230px,52vw,340px);
+  aspect-ratio:1.45/1;
+  perspective:1200px;
+  transform-style:preserve-3d;
+  transition:transform 1s var(--ease),opacity .7s var(--ease);
 }
-.loader-ring>span{
+.envelope>*{position:absolute}
+
+/* the letter — sits BEHIND the envelope and rises out of its top edge */
+.env-letter{
+  left:7%;right:7%;top:6%;height:88%;
+  background:linear-gradient(#fff 60%,var(--lilac-wash));
+  border:1px solid rgba(192,160,98,.4);
+  border-radius:3px;
+  display:flex;flex-direction:column;
+  align-items:center;gap:.4rem;
+  padding-top:8%;
+  box-shadow:0 14px 30px -16px rgba(62,53,70,.55);
+  transform:translateY(0);
+  transition:transform 1.15s var(--ease) .5s;
+  z-index:1;
+}
+.opening .env-letter{transform:translateY(-62%)}
+.env-letter .mono{
   font-family:'Marck Script',cursive;
-  font-size:clamp(2.4rem,8vw,3.4rem);
-  color:var(--gold-deep);
-  animation:spin 1.6s linear infinite reverse;
+  font-size:clamp(1.7rem,4.6vw,2.4rem);
+  color:var(--gold-deep);line-height:1.1;
 }
-@keyframes spin{to{transform:rotate(360deg)}}
+.env-letter .cap{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(.54rem,1.4vw,.66rem);
+  letter-spacing:.3em;text-transform:uppercase;
+  color:var(--lilac);
+}
+/* back of the envelope — hides the letter while it is inside */
+.env-body{
+  inset:0;background:linear-gradient(#F6F0E2,#EFE7D5);
+  border-radius:4px;
+  border:1px solid rgba(192,160,98,.55);
+  box-shadow:0 26px 55px -24px rgba(62,53,70,.5);
+  z-index:2;
+}
+/* front pocket with its fold lines */
+.env-front{
+  inset:0;z-index:3;border-radius:4px;
+  background:linear-gradient(#FCF8EE,#F3EBD9);
+  clip-path:polygon(0 34%,50% 80%,100% 34%,100% 100%,0 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+}
+.env-front::after{
+  content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(46deg,transparent calc(50% - .5px),rgba(192,160,98,.5) 50%,transparent calc(50% + .5px)),
+    linear-gradient(-46deg,transparent calc(50% - .5px),rgba(192,160,98,.5) 50%,transparent calc(50% + .5px));
+  clip-path:polygon(0 34%,50% 80%,100% 34%,100% 100%,0 100%);
+}
+/* the flap that opens */
+.env-flap{
+  left:0;right:0;top:0;height:82%;
+  background:linear-gradient(#F8F2E4,#EFE6D2 70%);
+  border:1px solid rgba(192,160,98,.55);
+  clip-path:polygon(0 0,100% 0,50% 100%);
+  transform-origin:top center;
+  transform:rotateX(0deg);
+  transition:transform .95s var(--ease);
+  z-index:4;
+  backface-visibility:hidden;
+}
+.opening .env-flap{transform:rotateX(179deg);z-index:0}
+/* wax seal */
+.env-seal{
+  left:50%;top:72%;width:clamp(52px,12vw,72px);height:clamp(52px,12vw,72px);
+  margin:calc(clamp(52px,12vw,72px) / -2) 0 0 calc(clamp(52px,12vw,72px) / -2);
+  border-radius:50%;
+  background:radial-gradient(circle at 34% 30%,var(--lilac-light),var(--lilac) 55%,var(--lilac-deep));
+  box-shadow:0 6px 16px -4px rgba(92,69,112,.7), inset 0 -2px 6px rgba(0,0,0,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Marck Script',cursive;
+  font-size:clamp(1rem,2.6vw,1.35rem);
+  color:rgba(255,255,255,.9);
+  z-index:5;
+  animation:sealPulse 2.2s ease-in-out infinite;
+  transition:transform .5s var(--ease),opacity .5s var(--ease);
+}
+@keyframes sealPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.07)}
+}
+.opening .env-seal{
+  animation:none;
+  transform:scale(1.5) rotate(14deg);opacity:0;
+}
+.opening .envelope{transform:scale(1.06) translateY(6px)}
+.gone .envelope{transform:scale(1.5) translateY(-14%);opacity:0}
+
+.env-hint{
+  position:relative;
+  font-family:'Playfair Display',serif;
+  font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--gold-deep);
+  animation:pulse 2.2s ease-in-out infinite;
+  transition:opacity .4s;
+}
+.opening .env-hint{opacity:0}
+
+/* ============ SCROLL PROGRESS ============ */
+#progress{
+  position:fixed;top:0;left:0;height:2px;width:100%;
+  transform:scaleX(0);transform-origin:0 50%;
+  background:linear-gradient(90deg,var(--gold-light),var(--gold),var(--lilac));
+  z-index:900;pointer-events:none;
+}
 
 /* ============ FLOATING PETALS ============ */
 .dust{position:fixed;inset:0;pointer-events:none;z-index:2;overflow:hidden}
@@ -115,6 +221,15 @@ h2{
   text-align:center;line-height:1.15;
   margin-bottom:clamp(2rem,5vh,3.5rem);
 }
+/* word-by-word reveal */
+h2 .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.06em}
+h2 .w>i{
+  display:inline-block;font-style:inherit;
+  transform:translateY(115%);
+  transition:transform .85s var(--ease);
+  transition-delay:calc(var(--i) * 85ms);
+}
+h2.in .w>i{transform:translateY(0)}
 .lede{
   max-width:56ch;margin:-1.6rem auto clamp(2.4rem,5vh,3.4rem);
   text-align:center;color:var(--ink-soft);
@@ -278,15 +393,25 @@ h2{
   grid-template-columns:repeat(auto-fit,minmax(258px,1fr));
   gap:clamp(1.4rem,2.6vw,2.2rem);
 }
+.cards{perspective:1000px}
 .card{
   background:#fff;
   padding:clamp(1.6rem,2.8vw,2.4rem) clamp(1.2rem,2.2vw,1.8rem);
   text-align:center;border-radius:3px;
   border:1px solid rgba(192,160,98,.25);
   box-shadow:0 18px 40px -26px rgba(62,53,70,.45);
-  transition:transform .5s var(--ease),box-shadow .5s var(--ease);
+  transition:box-shadow .5s var(--ease),transform .5s var(--ease);
+  transform-style:preserve-3d;
 }
-.card:hover{transform:translateY(-9px);box-shadow:0 28px 55px -26px rgba(62,53,70,.55)}
+/* tilt follows the cursor (set from JS); falls back to a lift on touch */
+.card.tilt{
+  transition:box-shadow .5s var(--ease),transform .18s ease-out;
+  box-shadow:0 30px 58px -26px rgba(62,53,70,.55);
+}
+.card.tilt>*{transform:translateZ(22px)}
+@media(hover:none){
+  .card:active{transform:translateY(-6px)}
+}
 .card .flag{
   width:58px;margin:0 auto 1.2rem;border-radius:3px;
   box-shadow:0 4px 12px -4px rgba(0,0,0,.25);
@@ -320,16 +445,23 @@ h2{
 .cd-num{
   font-family:'Playfair Display',serif;
   font-size:clamp(1.9rem,4vw,3rem);
-  color:var(--lilac-deep);line-height:1;
+  color:var(--lilac-deep);line-height:1.1;
   display:block;font-variant-numeric:tabular-nums;
+  height:1.1em;overflow:hidden;position:relative;
 }
+.cd-num span{display:block}
 .cd-lbl{
   display:block;margin-top:.45rem;
   font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
   color:var(--ink-soft);
 }
-.cd-flip{animation:flip .5s var(--ease)}
-@keyframes flip{0%{transform:translateY(-7px);opacity:.3}100%{transform:none;opacity:1}}
+/* digits roll like a flip-board */
+.cd-roll{animation:roll .55s var(--ease)}
+@keyframes roll{
+  0%{transform:translateY(-100%);opacity:0}
+  55%{opacity:1}
+  100%{transform:translateY(0);opacity:1}
+}
 
 /* ============ DATE + INFO ============ */
 .date-grid{
@@ -528,6 +660,24 @@ h2{
 }
 .btn svg{width:20px;flex:0 0 auto}
 .btn:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 24px 46px -14px rgba(124,99,148,.9)}
+
+/* petals bursting from the button */
+.btn-wrap{position:relative;display:inline-block}
+.burst{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.burst i{
+  position:absolute;top:50%;left:50%;
+  width:9px;height:9px;border-radius:50% 0 50% 0;
+  background:var(--lilac-light);opacity:0;
+}
+.burst i.fly{animation:burst 1.5s var(--ease) forwards}
+@keyframes burst{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(0)}
+  15%{opacity:.9}
+  100%{
+    opacity:0;
+    transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.1) rotate(var(--rot));
+  }
+}
 .btn::after{
   content:'';position:absolute;top:0;left:-120%;
   width:60%;height:100%;
@@ -591,7 +741,22 @@ footer .organizer{opacity:1;animation:none}
 </head>
 <body>
 
-<div id="loader"><div class="loader-ring"><span>К/Ю</span></div></div>
+<noscript><style>#loader{display:none}</style></noscript>
+<div id="loader" role="button" tabindex="0" aria-label="Открыть приглашение">
+  <div class="envelope" id="envelope">
+    <div class="env-body"></div>
+    <div class="env-letter">
+      <span class="mono">К/Ю</span>
+      <span class="cap">приглашение</span>
+    </div>
+    <div class="env-front"></div>
+    <div class="env-flap"></div>
+    <div class="env-seal">К/Ю</div>
+  </div>
+  <p class="env-hint">нажмите, чтобы открыть</p>
+</div>
+
+<div id="progress" aria-hidden="true"></div>
 <div class="dust" id="dust" aria-hidden="true"></div>
 
 <!-- ===== HERO ===== -->
@@ -834,13 +999,16 @@ footer .organizer{opacity:1;animation:none}
     <div class="rv"><span class="reply-quote">«Да, мы придём!» 🤍</span></div>
 
     <div class="rv">
-      <a class="btn" href="https://wa.me/qr/C5OEIWREDCW5I1" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M17.5 14.4c-.3-.2-1.8-.9-2-1-.3-.1-.5-.2-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.5c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5 4.5.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.1-.3-.2-.5-.4z"/>
-          <path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3.1.8.8-3-.2-.3c-.8-1.3-1.3-2.9-1.3-4.5 0-4.5 3.7-8.2 8.2-8.2s8.2 3.7 8.2 8.2-3.6 8.4-8 8.4z"/>
-        </svg>
-        Написать в WhatsApp
-      </a>
+      <span class="btn-wrap">
+        <span class="burst" id="burst" aria-hidden="true"></span>
+        <a class="btn" id="waBtn" href="https://wa.me/qr/C5OEIWREDCW5I1" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M17.5 14.4c-.3-.2-1.8-.9-2-1-.3-.1-.5-.2-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.5c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5 4.5.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.1-.3-.2-.5-.4z"/>
+            <path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3.1.8.8-3-.2-.3c-.8-1.3-1.3-2.9-1.3-4.5 0-4.5 3.7-8.2 8.2-8.2s8.2 3.7 8.2 8.2-3.6 8.4-8 8.4z"/>
+          </svg>
+          Написать в WhatsApp
+        </a>
+      </span>
       <p class="contact-name">Контакт для подтверждения: <b>Зули</b></p>
     </div>
   </div>
@@ -862,15 +1030,131 @@ footer .organizer{opacity:1;animation:none}
 </footer>
 
 <script>
-/* ---- preloader ---- */
-window.addEventListener('load',()=>{
-  setTimeout(()=>document.getElementById('loader').classList.add('done'),600);
-});
+const REDUCED=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---- envelope intro: seal breaks, flap opens, letter slides out ---- */
+(()=>{
+  const loader=document.getElementById('loader');
+  const env=document.getElementById('envelope');
+  let opened=false;
+  document.body.style.overflow='hidden';
+
+  function open(){
+    if(opened) return; opened=true;
+    env.classList.add('opening');
+    loader.classList.add('opening');
+    setTimeout(()=>loader.classList.add('gone'),900);
+    setTimeout(()=>{
+      loader.classList.add('done');
+      document.body.style.overflow='';
+    },1500);
+    setTimeout(()=>loader.remove(),2600);
+  }
+
+  if(REDUCED){
+    loader.remove();document.body.style.overflow='';return;
+  }
+  loader.addEventListener('click',open);
+  loader.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}
+  });
+  /* opens by itself if nobody clicks */
+  window.addEventListener('load',()=>setTimeout(open,2200));
+})();
+
+/* ---- scroll progress ---- */
+(()=>{
+  const bar=document.getElementById('progress');
+  let raf;
+  const upd=()=>{
+    const se=document.scrollingElement;
+    const max=se.scrollHeight-innerHeight;
+    bar.style.transform='scaleX('+(max>0?se.scrollTop/max:0)+')';
+    raf=null;
+  };
+  addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(upd)},{passive:true});
+  upd();
+})();
+
+/* ---- headings reveal word by word ---- */
+(()=>{
+  document.querySelectorAll('h2').forEach(h=>{
+    const words=h.textContent.trim().split(/\s+/);
+    h.innerHTML=words.map((w,i)=>
+      '<span class="w" style="--i:'+i+'"><i>'+w+'</i></span>'
+    ).join(' ');
+  });
+})();
+
+/* ---- ornament bands drift as you scroll ---- */
+(()=>{
+  if(REDUCED) return;
+  const bands=[...document.querySelectorAll('.band')];
+  if(!bands.length) return;
+  let raf;
+  const upd=()=>{
+    const y=window.scrollY;
+    bands.forEach((b,i)=>{
+      const dir=(i%2===0)?1:-1;
+      b.style.backgroundPositionX=(y*0.14*dir)+'px';
+    });
+    raf=null;
+  };
+  addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(upd)},{passive:true});
+  upd();
+})();
+
+/* ---- greeting cards tilt toward the cursor ---- */
+(()=>{
+  if(REDUCED||!matchMedia('(hover:hover)').matches) return;
+  document.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('pointermove',e=>{
+      const r=card.getBoundingClientRect();
+      const px=(e.clientX-r.left)/r.width-.5;
+      const py=(e.clientY-r.top)/r.height-.5;
+      card.classList.add('tilt');
+      card.style.transform=
+        'perspective(900px) rotateY('+(px*9)+'deg) rotateX('+(-py*9)+'deg) translateY(-8px)';
+    });
+    card.addEventListener('pointerleave',()=>{
+      card.classList.remove('tilt');
+      card.style.transform='';
+    });
+  });
+})();
+
+/* ---- petals burst from the WhatsApp button ---- */
+(()=>{
+  if(REDUCED) return;
+  const btn=document.getElementById('waBtn');
+  const box=document.getElementById('burst');
+  if(!btn||!box) return;
+  let cooling=false;
+  function burst(){
+    if(cooling) return; cooling=true;
+    setTimeout(()=>cooling=false,900);
+    for(let i=0;i<12;i++){
+      const p=document.createElement('i');
+      const a=(Math.PI*2*i)/12 + Math.random()*.5;
+      const d=70+Math.random()*70;
+      p.style.setProperty('--dx',(Math.cos(a)*d).toFixed(0)+'px');
+      p.style.setProperty('--dy',(Math.sin(a)*d-30).toFixed(0)+'px');
+      p.style.setProperty('--rot',(Math.random()*420-210).toFixed(0)+'deg');
+      if(i%3===0) p.style.background='#DBC48E';
+      if(i%3===1) p.style.background='#B9A3D0';
+      p.classList.add('fly');
+      box.appendChild(p);
+      setTimeout(()=>p.remove(),1600);
+    }
+  }
+  btn.addEventListener('pointerenter',burst);
+  btn.addEventListener('click',burst);
+})();
 
 /* ---- floating petals ---- */
 (()=>{
   const box=document.getElementById('dust');
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(REDUCED) return;
   const n=window.innerWidth<600?12:22;
   for(let i=0;i<n;i++){
     const p=document.createElement('i');
@@ -921,8 +1205,9 @@ window.addEventListener('load',()=>{
     for(const k in ids){
       const el=document.getElementById(ids[k]);
       if(prev[k]!==t[k]){
-        el.textContent=f(t[k]);
-        el.classList.remove('cd-flip');void el.offsetWidth;el.classList.add('cd-flip');
+        el.innerHTML='<span>'+f(t[k])+'</span>';
+        const inner=el.firstChild;
+        if(!REDUCED){inner.classList.add('cd-roll');}
         prev[k]=t[k];
       }
     }
@@ -933,7 +1218,7 @@ window.addEventListener('load',()=>{
 
 /* ---- hero parallax ---- */
 (()=>{
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(REDUCED) return;
   const img=document.querySelector('.hero-right img');
   if(!img)return;
   let raf;
