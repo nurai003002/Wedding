@@ -102,52 +102,57 @@ img{max-width:100%;display:block}
   letter-spacing:.3em;text-transform:uppercase;
   color:var(--lilac);
 }
-/* back of the envelope — hides the letter while it is inside */
+/* back of the envelope — deeper tone, hides the letter while it is inside */
 .env-body{
-  inset:0;background:linear-gradient(#F6F0E2,#EFE7D5);
-  border-radius:4px;
-  border:1px solid rgba(192,160,98,.55);
-  box-shadow:0 26px 55px -24px rgba(62,53,70,.5);
+  inset:0;
+  background:linear-gradient(165deg,#F2E9D3,#E9DEC3);
+  border-radius:5px;
+  border:1px solid rgba(165,129,59,.5);
+  box-shadow:
+    0 26px 55px -22px rgba(62,53,70,.55),
+    inset 0 1px 0 rgba(255,255,255,.5);
   z-index:2;
 }
-/* front pocket with its fold lines */
-.env-front{
-  inset:0;z-index:3;border-radius:4px;
-  background:linear-gradient(#FCF8EE,#F3EBD9);
-  clip-path:polygon(0 34%,50% 80%,100% 34%,100% 100%,0 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
-}
-.env-front::after{
-  content:'';position:absolute;inset:0;
-  background:
-    linear-gradient(46deg,transparent calc(50% - .5px),rgba(192,160,98,.5) 50%,transparent calc(50% + .5px)),
-    linear-gradient(-46deg,transparent calc(50% - .5px),rgba(192,160,98,.5) 50%,transparent calc(50% + .5px));
-  clip-path:polygon(0 34%,50% 80%,100% 34%,100% 100%,0 100%);
-}
-/* the flap that opens */
+/* the flap — lighter than the body, with real edges and a cast shadow,
+   so a closed envelope reads as closed */
 .env-flap{
-  left:0;right:0;top:0;height:82%;
-  background:linear-gradient(#F8F2E4,#EFE6D2 70%);
-  border:1px solid rgba(192,160,98,.55);
+  left:0;right:0;top:0;height:74%;
+  /* gold underlay shows through as a hairline rim along the folded edges */
+  background:rgba(165,129,59,.75);
   clip-path:polygon(0 0,100% 0,50% 100%);
+  filter:drop-shadow(0 5px 6px rgba(120,95,45,.3));
   transform-origin:top center;
   transform:rotateX(0deg);
   transition:transform .95s var(--ease);
   z-index:4;
   backface-visibility:hidden;
 }
-.opening .env-flap{transform:rotateX(179deg);z-index:0}
+.env-flap::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(#FEFCF6 20%,#F7F0DF 78%,#EFE5CD);
+  clip-path:polygon(.55% 1.4%,99.45% 1.4%,50% 98.2%);
+}
+.opening .env-flap{transform:rotateX(179deg);z-index:0;filter:none}
 /* wax seal */
+/* wax seal — sits exactly on the flap's tip */
 .env-seal{
-  left:50%;top:72%;width:clamp(52px,12vw,72px);height:clamp(52px,12vw,72px);
-  margin:calc(clamp(52px,12vw,72px) / -2) 0 0 calc(clamp(52px,12vw,72px) / -2);
-  border-radius:50%;
-  background:radial-gradient(circle at 34% 30%,var(--lilac-light),var(--lilac) 55%,var(--lilac-deep));
-  box-shadow:0 6px 16px -4px rgba(92,69,112,.7), inset 0 -2px 6px rgba(0,0,0,.25);
+  left:50%;top:74%;width:clamp(54px,13vw,76px);height:clamp(54px,13vw,76px);
+  margin:calc(clamp(54px,13vw,76px) / -2) 0 0 calc(clamp(54px,13vw,76px) / -2);
+  /* slightly irregular, the way poured wax sets */
+  border-radius:48% 52% 51% 49% / 50% 47% 53% 50%;
+  background:
+    radial-gradient(circle at 34% 28%,rgba(255,255,255,.45),transparent 42%),
+    radial-gradient(circle at 62% 74%,var(--lilac-deep),transparent 55%),
+    linear-gradient(150deg,#8E75A8,#6A527F);
+  box-shadow:
+    0 8px 18px -4px rgba(92,69,112,.75),
+    inset 0 -3px 7px rgba(50,35,68,.5),
+    inset 0 3px 6px rgba(255,255,255,.28);
   display:flex;align-items:center;justify-content:center;
   font-family:'Marck Script',cursive;
-  font-size:clamp(1rem,2.6vw,1.35rem);
-  color:rgba(255,255,255,.9);
+  font-size:clamp(1.05rem,2.7vw,1.4rem);
+  color:rgba(255,255,255,.94);
+  text-shadow:0 1px 2px rgba(50,35,68,.55);
   z-index:5;
   animation:sealPulse 2.2s ease-in-out infinite;
   transition:transform .5s var(--ease),opacity .5s var(--ease);
@@ -165,11 +170,21 @@ img{max-width:100%;display:block}
 
 .env-hint{
   position:relative;
+  display:flex;align-items:center;gap:.7rem;
   font-family:'Playfair Display',serif;
-  font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;
-  color:var(--gold-deep);
-  animation:pulse 2.2s ease-in-out infinite;
+  font-size:.8rem;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--lilac);
+  animation:hintPulse 2.4s ease-in-out infinite;
   transition:opacity .4s;
+}
+.env-hint::before,.env-hint::after{
+  content:'';height:1px;width:26px;
+  background:linear-gradient(90deg,transparent,var(--gold));
+}
+.env-hint::after{background:linear-gradient(270deg,transparent,var(--gold))}
+@keyframes hintPulse{
+  0%,100%{opacity:.55;transform:translateY(0)}
+  50%{opacity:1;transform:translateY(-2px)}
 }
 .opening .env-hint{opacity:0}
 
@@ -789,12 +804,11 @@ footer .organizer{opacity:1;animation:none}
 <noscript><style>#loader{display:none}</style></noscript>
 <div id="loader" role="button" tabindex="0" aria-label="Открыть приглашение">
   <div class="envelope" id="envelope">
-    <div class="env-body"></div>
     <div class="env-letter">
       <span class="mono">К/Ю</span>
       <span class="cap">приглашение</span>
     </div>
-    <div class="env-front"></div>
+    <div class="env-body"></div>
     <div class="env-flap"></div>
     <div class="env-seal">К/Ю</div>
   </div>
@@ -1152,8 +1166,8 @@ const REDUCED=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   loader.addEventListener('keydown',e=>{
     if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}
   });
-  /* opens by itself if nobody clicks */
-  window.addEventListener('load',()=>setTimeout(open,2200));
+  /* stays closed long enough to be seen; opens by itself if nobody clicks */
+  window.addEventListener('load',()=>setTimeout(open,4500));
 })();
 
 /* ---- scroll progress ---- */
