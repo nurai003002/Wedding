@@ -410,6 +410,7 @@ h2.in .w>i{transform:translateY(0)}
 }
 .cards{perspective:1000px}
 .card{
+  min-width:0; /* let the flag image shrink instead of inflating the column */
   background:#fff;
   padding:clamp(1.6rem,2.8vw,2.4rem) clamp(1.2rem,2.2vw,1.8rem);
   text-align:center;border-radius:3px;
@@ -429,7 +430,8 @@ h2.in .w>i{transform:translateY(0)}
 }
 /* real flags keep their official proportions — matched by height, not width */
 .card .flag{
-  height:40px;width:auto;margin:0 auto 1.3rem;
+  height:40px;width:auto;max-width:100%;
+  margin:0 auto 1.3rem;
   border-radius:2px;
   box-shadow:0 5px 14px -5px rgba(0,0,0,.4);
   outline:1px solid rgba(0,0,0,.06);
@@ -893,11 +895,11 @@ footer .organizer{opacity:1;animation:none}
       </article>
 
       <article class="card rv">
-        <img class="flag" src="assets/flag-ua.png" alt="Флаг Украины" width="240" height="160" loading="lazy">
-        <h3>ШАНОВНИЙ ГОСТЮ!</h3>
-        <p>Запрошуємо вас на найособливіше свято 2026 року.
-          <em>Кохання · Щастя</em>
-          Незабутня атмосфера.<br>Станьте частиною цього особливого дня!
+        <img class="flag" src="assets/flag-ru.png" alt="Флаг России" width="240" height="160" loading="lazy">
+        <h3>ДОРОГОЙ ГОСТЬ!</h3>
+        <p>Приглашаем вас на самый особенный праздник 2026 года.
+          <em>Любовь · Счастье</em>
+          Незабываемая атмосфера.<br>Станьте частью этого особенного дня!
         </p>
       </article>
     </div>
